@@ -43,5 +43,4 @@ ModuleRoutes(app);
 AssignmentRoutes(app);
 app.use(EnrollmentRoutes);
 
-app.listen(process.env.PORT||4000)
-
+app.listen(process.env.PORT||4000);
