@@ -29,8 +29,9 @@
   "homepage": "https://github.com/JICIJIANG/kanbas-react-web-app-cs5610-fa24#readme",
   "dependencies": {
     "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
+    "dotenv": "^16.4.7",
     "express": "^4.21.1",
-    "express-session": "^1.18.1"
+    "express-session": "^1.18.1",
+    "mongoose": "^8.8.4"
   }
 }

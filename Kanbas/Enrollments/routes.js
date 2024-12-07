@@ -1,50 +1,20 @@
-import express from "express";
-import {
-  findEnrollmentsByUser,
-  enrollUserInCourse,
-  unenrollUserFromCourse,
-  isUserEnrolledInCourse,
-} from "./dao.js";
+import * as dao from "./dao.js";
+export default function EnrollmentsRoutes(app) {
+    app.get("/api/enrollments/:userId", async (req, res) => { // get enrollments from a user
+        const { userId } = req.params;
+        const enrollments = await dao.getEnrollmentsByUser(userId);
+        res.send(enrollments);
+    });
 
-const router = express.Router();
+    app.post("/api/enrollments/:courseId/:userId", async (req, res) => { // enroll a user in a course
+        const { courseId, userId } = req.params;
+        const status = await dao.enrollUserInCourse(courseId, userId);
+        res.send(status);
+    });
 
-// 获取某用户的所有选课
-router.get("/api/enrollments/:userId", (req, res) => {
-  const { userId } = req.params;
-  const enrollments = findEnrollmentsByUser(userId);
-  res.status(200).json(enrollments|| []);
-});
-
-// 为用户选课
-router.post("/api/enrollments", (req, res) => {
-  const { userId, courseId } = req.body;
-
-  if (!userId || !courseId) {
-    return res.status(400).json({ error: "User ID and Course ID are required." });
-  }
-
-  if (isUserEnrolledInCourse(userId, courseId)) {
-    return res.status(400).json({ error: "User is already enrolled in this course." });
-  }
-
-  enrollUserInCourse(userId, courseId);
-  res.status(200).json({ message: "Enrollment successful." });
-});
-
-// 为用户退课
-router.delete("/api/enrollments/:userId/:courseId", (req, res) => {
-    const { userId, courseId } = req.params;
-  
-    if (!userId || !courseId) {
-      return res.status(400).json({ error: "User ID and Course ID are required." });
-    }
-  
-    if (!isUserEnrolledInCourse(userId, courseId)) {
-      return res.status(404).json({ error: "Enrollment not found." });
-    }
-  
-    unenrollUserFromCourse(userId, courseId);
-    res.status(200).json({ message: "Unenrollment successful." });
-  });
-
-export default router;
+    app.delete("/api/enrollments/:courseId/:userId", async (req, res) => { // unenroll a user from a course
+        const { courseId, userId } = req.params;
+        const status = await dao.unenrollUserFromCourse(courseId, userId);
+        res.send(status);
+    });
+}
